@@ -45,15 +45,16 @@ public class EditorRestController {
     @GetMapping(produces = "application/json")
     @Transactional
     public ResponseEntity<EditorState> get(final JwtAuthentication authentication) {
+        final EditorState blankState = new EditorState(authentication.getName(), "hello, use ctrl+f to search or ctrl+alt+h to show keybindings.\nthe contents of your list will stay eternally.");
         try {
             final EditorState byOwner = editorStateReposiory.findByOwner(authentication.getEmail());
             if (Objects.isNull(byOwner)) {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(blankState, HttpStatus.OK);
             }
             return new ResponseEntity<>(byOwner, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(blankState, HttpStatus.OK);
         }
 
     }
