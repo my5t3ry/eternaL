@@ -80,9 +80,11 @@ public class EncryptionService {
         }
     }
 
-    public StringKeyPair generateStringKeyPair(final String secret) {
+    public StringKeyPair generateStringKeyPair(final JwtAuthentication authentication) {
         try {
-            return convertToStringKeyPair(generateKeyPair(), secret);
+            final StringKeyPair stringKeyPair = convertToStringKeyPair(generateKeyPair(), authentication.getId());
+            stringKeyPair.setOwner(authentication.getEmail());
+            return stringKeyPair;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new IllegalStateException("could not generate key", e);
@@ -92,7 +94,7 @@ public class EncryptionService {
     public List unlock(final List list, final JwtAuthentication authentication) {
         StringKeyPair keyPair = stringKeyPairRepository.findByOwner(authentication.getEmail());
         if (Objects.isNull(keyPair)) {
-            keyPair = stringKeyPairRepository.save(generateStringKeyPair(authentication.getId()));
+            keyPair = stringKeyPairRepository.save(generateStringKeyPair(authentication));
         }
         list.setSecret(authentication.getId());
         list.setStringKeyPair(keyPair);

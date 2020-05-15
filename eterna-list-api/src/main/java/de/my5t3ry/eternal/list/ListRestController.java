@@ -58,6 +58,7 @@ public class ListRestController {
             if (Objects.isNull(defaultList)) {
                 return new ResponseEntity<>(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
+            encryptionService.unlock(defaultList, authentication);
             return new ResponseEntity<>(defaultList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
