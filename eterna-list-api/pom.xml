@@ -121,7 +121,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>eternaL-api</finalName>
+        <finalName>eternal-list-api</finalName>
     </build>
 
 </project>
