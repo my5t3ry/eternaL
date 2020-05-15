@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.my5t3ry</groupId>
-    <artifactId>eterna-l</artifactId>
+    <artifactId>eterna-list-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>eterna-l</name>
+    <name>eterna-list-api</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>

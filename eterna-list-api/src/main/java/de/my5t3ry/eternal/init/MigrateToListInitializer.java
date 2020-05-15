@@ -11,9 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Objects;
 
-/**
- * Created by Jens Greive on 06.12.18.
- */
 @Component
 @Slf4j
 public class MigrateToListInitializer {
@@ -29,8 +26,9 @@ public class MigrateToListInitializer {
 
     @PostConstruct
     public void init() {
-        String initLog = "MIGRATE_LISTS";
+        String initLog = "MIGRATE_LISTS_4";
         if (Objects.isNull(initLogRepository.findByMessage(initLog))) {
+            listRepository.deleteAll(listRepository.findAll());
             editorStateRepository.findAll().forEach(curState -> {
                 listRepository.save(new List(curState.getOwner(), curState.getValue(), ListType.DEFAULT));
             });

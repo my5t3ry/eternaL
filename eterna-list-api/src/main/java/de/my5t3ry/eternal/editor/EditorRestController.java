@@ -67,6 +67,6 @@ public class EditorRestController {
     }
 
     private List createDefaultList(JwtAuthentication authentication) {
-        return new List(authentication.getName(), defaultListText, ListType.DEFAULT);
+        return new List(authentication.getEmail(), defaultListText, ListType.DEFAULT);
     }
 }
