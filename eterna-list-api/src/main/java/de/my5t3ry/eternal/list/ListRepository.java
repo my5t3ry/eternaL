@@ -1,6 +1,6 @@
 package de.my5t3ry.eternal.list;
 
-import de.my5t3ry.eternal.editor.EditorState;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

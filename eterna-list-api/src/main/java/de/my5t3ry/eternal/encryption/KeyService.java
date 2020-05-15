@@ -104,8 +104,8 @@ public class KeyService {
         }
     }
 
-    private static byte[] encryptPrivateKey(byte[] data, char[] secret) throws
-            IOException,
+    private static byte[] encryptPrivateKey(byte[] data, char[] secret)
+            throws IOException,
             NoSuchAlgorithmException,
             InvalidKeySpecException,
             NoSuchPaddingException,

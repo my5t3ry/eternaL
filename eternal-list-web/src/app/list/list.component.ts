@@ -26,7 +26,7 @@ export class ListComponent implements AfterViewInit, OnInit {
   onChange($event: any) {
     console.log($event);
     this.http
-      .post('api/editor', $event, {})
+      .post('api/list', $event, {})
       .toPromise()
       .then((res: any) => {
           console.log(this);
@@ -38,7 +38,7 @@ export class ListComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    this.http.get('api/editor/default').subscribe((data) => {
+    this.http.get('api/list/default').subscribe((data) => {
       if (data != null) {
         // @ts-ignore
         this.text = data.value;

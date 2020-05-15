@@ -1,4 +1,4 @@
-package de.my5t3ry.eternal.editor;
+package de.my5t3ry.eternal.list;
 
 import de.my5t3ry.eternal.jwt.JwtAuthentication;
 import de.my5t3ry.eternal.list.List;
@@ -22,8 +22,8 @@ import java.util.Objects;
  * Date: 5/1/20 5:45 PM
  */
 @Controller
-@RequestMapping("editor")
-public class EditorRestController {
+@RequestMapping("list")
+public class ListRestController {
 
     @Value("${list.default}")
     private String defaultListText;
@@ -33,7 +33,7 @@ public class EditorRestController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<EditorState> save(@RequestBody String value, final JwtAuthentication authentication) {
+    public ResponseEntity<List> save(@RequestBody String value, final JwtAuthentication authentication) {
         try {
             final List defaultList = listRepository.findByOwner(authentication.getEmail());
             defaultList.setSecret(authentication.getId());
