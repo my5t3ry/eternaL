@@ -228,3 +228,6 @@ dist
 hs_err_pid*
 
 .idea
+
+eterna-list-api/src/main/resources/master-private.key
+eterna-list-api/src/main/resources/master-public.key
