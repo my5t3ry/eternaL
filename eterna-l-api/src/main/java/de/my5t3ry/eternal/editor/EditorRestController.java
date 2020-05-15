@@ -1,7 +1,11 @@
 package de.my5t3ry.eternal.editor;
 
 import de.my5t3ry.eternal.jwt.JwtAuthentication;
+import de.my5t3ry.eternal.list.List;
+import de.my5t3ry.eternal.list.ListRepository;
+import de.my5t3ry.eternal.list.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,20 +25,25 @@ import java.util.Objects;
 @RequestMapping("editor")
 public class EditorRestController {
 
+    @Value("${list.default}")
+    private String defaultListText;
     @Autowired
-    private EditorStateReposiory editorStateReposiory;
+    private EditorStateRepository editorStateRepository;
+
+    @Autowired
+    private ListRepository listRepository;
 
     @PostMapping
     @Transactional
     public ResponseEntity<EditorState> save(@RequestBody String value, final JwtAuthentication authentication) {
         try {
-            final EditorState existinState = editorStateReposiory.findByOwner(authentication.getEmail());
+            final List existinState = listRepository.findByOwner(authentication.getEmail());
             if (Objects.nonNull(existinState)) {
                 existinState.setValue(value);
-                return new ResponseEntity(editorStateReposiory.save(existinState), HttpStatus.OK);
+                return new ResponseEntity(listRepository.save(existinState), HttpStatus.OK);
 
             } else {
-                return new ResponseEntity(editorStateReposiory.save(new EditorState(authentication.getEmail(), value)), HttpStatus.OK);
+                return new ResponseEntity(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,20 +51,22 @@ public class EditorRestController {
         }
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(path = "default", produces = "application/json")
     @Transactional
-    public ResponseEntity<EditorState> get(final JwtAuthentication authentication) {
-        final EditorState blankState = new EditorState(authentication.getName(), "hello, use ctrl+f to search or ctrl+alt+h to show keybindings.\nthe contents of your list will stay eternally.");
+    public ResponseEntity<List> get(final JwtAuthentication authentication) {
         try {
-            final EditorState byOwner = editorStateReposiory.findByOwner(authentication.getEmail());
-            if (Objects.isNull(byOwner)) {
-                return new ResponseEntity<>(blankState, HttpStatus.OK);
+            final List defaultList = listRepository.findByOwner(authentication.getEmail());
+            if (Objects.isNull(defaultList)) {
+                return new ResponseEntity<>(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
-            return new ResponseEntity<>(byOwner, HttpStatus.OK);
+            return new ResponseEntity<>(defaultList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(blankState, HttpStatus.OK);
+            return new ResponseEntity<>(createDefaultList(authentication), HttpStatus.OK);
         }
+    }
 
+    private List createDefaultList(JwtAuthentication authentication) {
+        return new List(authentication.getName(), defaultListText, ListType.DEFAULT);
     }
 }
