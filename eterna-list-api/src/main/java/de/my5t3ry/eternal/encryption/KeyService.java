@@ -117,8 +117,8 @@ public class KeyService {
         SecureRandom random = new SecureRandom();
         random.nextBytes(SALT);
         PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
-        SecretKeyFactory keyFac = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
-        SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
+        SecretKey pbeKey = keyFactory.generateSecret(pbeKeySpec);
         Cipher pbeCipher = Cipher.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         pbeCipher.init(Cipher.ENCRYPT_MODE, pbeKey, new PBEParameterSpec(SALT, SALT_ITERATION_COUNT));
         byte[] cipherText = pbeCipher.doFinal(data);
