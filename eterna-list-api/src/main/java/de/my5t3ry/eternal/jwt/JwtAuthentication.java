@@ -60,4 +60,8 @@ public class JwtAuthentication implements Authentication {
     public String getEmail() {
         return decodedJWT.getClaim("email").asString();
     }
+
+    public String getId() {
+        return decodedJWT.getClaim("user_id").asString();
+    }
 }

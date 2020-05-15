@@ -27,8 +27,6 @@ public class EditorRestController {
 
     @Value("${list.default}")
     private String defaultListText;
-    @Autowired
-    private EditorStateRepository editorStateRepository;
 
     @Autowired
     private ListRepository listRepository;
@@ -37,10 +35,11 @@ public class EditorRestController {
     @Transactional
     public ResponseEntity<EditorState> save(@RequestBody String value, final JwtAuthentication authentication) {
         try {
-            final List existinState = listRepository.findByOwner(authentication.getEmail());
-            if (Objects.nonNull(existinState)) {
-                existinState.setValue(value);
-                return new ResponseEntity(listRepository.save(existinState), HttpStatus.OK);
+            final List defaultList = listRepository.findByOwner(authentication.getEmail());
+            defaultList.setSecret(authentication.getId());
+            if (Objects.nonNull(defaultList)) {
+                defaultList.setValue(value);
+                return new ResponseEntity(listRepository.save(defaultList), HttpStatus.OK);
 
             } else {
                 return new ResponseEntity(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
@@ -59,6 +58,7 @@ public class EditorRestController {
             if (Objects.isNull(defaultList)) {
                 return new ResponseEntity<>(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
+            defaultList.setSecret(authentication.getId());
             return new ResponseEntity<>(defaultList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,6 +67,6 @@ public class EditorRestController {
     }
 
     private List createDefaultList(JwtAuthentication authentication) {
-        return new List(authentication.getEmail(), defaultListText, ListType.DEFAULT);
+        return new List(authentication, defaultListText, ListType.DEFAULT);
     }
 }

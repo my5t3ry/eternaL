@@ -30,7 +30,7 @@ public class MigrateToListInitializer {
         if (Objects.isNull(initLogRepository.findByMessage(initLog))) {
             listRepository.deleteAll(listRepository.findAll());
             editorStateRepository.findAll().forEach(curState -> {
-                listRepository.save(new List(curState.getOwner(), curState.getValue(), ListType.DEFAULT));
+//                listRepository.save(new List(curState.getOwner(), curState.getValue(), ListType.DEFAULT));
             });
             initLogRepository.save(new InitLog(initLog, initLog));
         }
