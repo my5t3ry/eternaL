@@ -104,7 +104,7 @@ public class KeyService {
         }
     }
 
-    private static byte[] encryptPrivateKey(byte[] data, char[] password) throws
+    private static byte[] encryptPrivateKey(byte[] data, char[] secret) throws
             IOException,
             NoSuchAlgorithmException,
             InvalidKeySpecException,
@@ -116,7 +116,7 @@ public class KeyService {
             InvalidParameterSpecException {
         SecureRandom random = new SecureRandom();
         random.nextBytes(SALT);
-        PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
+        PBEKeySpec pbeKeySpec = new PBEKeySpec(secret);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         SecretKey pbeKey = keyFactory.generateSecret(pbeKeySpec);
         Cipher pbeCipher = Cipher.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);

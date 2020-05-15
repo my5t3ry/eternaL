@@ -40,7 +40,6 @@ public class EditorRestController {
             if (Objects.nonNull(defaultList)) {
                 defaultList.setValue(value);
                 return new ResponseEntity(listRepository.save(defaultList), HttpStatus.OK);
-
             } else {
                 return new ResponseEntity(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
