@@ -17,13 +17,13 @@ public class KeyService {
     private static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
         PublicKey key = KeyFactory.getInstance(ALGORITHM)    /* ExceptionL Invalid DER encoding */
                 .generatePublic(new X509EncodedKeySpec(publicKey));
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.PUBLIC_KEY, key);
         return cipher.doFinal(inputData);
     }
 
     public static String encrypt(String publicKey, String inputData) throws Exception {
-        return String.valueOf(encrypt(encodedStringToBytes(publicKey), stringToBytes(inputData)));
+        return bytesToEncodedString(encrypt(encodedStringToBytes(publicKey), stringToBytes(inputData)));
     }
 
     private static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
@@ -35,16 +35,15 @@ public class KeyService {
     }
 
     public static String decrypt(String privateKey, String inputData) throws Exception {
-        return String.valueOf(decrypt(
+        return bytesToString(decrypt(
                 encodedStringToBytes(privateKey),
                 encodedStringToBytes(inputData)));
     }
 
     public static KeyPair generateKeyPair()
-            throws NoSuchAlgorithmException, NoSuchProviderException {
+            throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
-        keyGen.initialize(512, random);
+        keyGen.initialize(2048);
         return keyGen.generateKeyPair();
     }
 
@@ -68,14 +67,13 @@ public class KeyService {
         byte[] publicKey = keyPair.getPublic().getEncoded();
         byte[] privateKey = keyPair.getPrivate().getEncoded();
         return new StringKeyPair(bytesToEncodedString(publicKey), bytesToEncodedString(privateKey));
-
     }
 
 
     public static StringKeyPair generateStringKeyPair() {
         try {
             return KeyService.convertToStringKeyPair(KeyService.generateKeyPair());
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new IllegalStateException("could not generate key", e);
         }

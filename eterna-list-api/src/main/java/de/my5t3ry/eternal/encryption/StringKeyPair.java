@@ -3,10 +3,7 @@ package de.my5t3ry.eternal.encryption;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * User: my5t3ry
@@ -20,7 +17,10 @@ public class StringKeyPair {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Lob
     private String publicKey;
+
+    @Lob
     private String privateKey;
 
     public StringKeyPair(final String publicKey, final String privateKey) {
