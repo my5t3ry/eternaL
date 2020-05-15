@@ -15,6 +15,8 @@ import java.util.Base64;
 public class KeyService {
 
     private static final String ALGORITHM = "RSA";
+    private static final String PRIVATE_KEY_ENCRYPTION_ALGORITHM = "PBEWithSHA1AndDESede";
+    private static final byte[] SALT = new byte[8];
 
     private static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
         PublicKey key = KeyFactory.getInstance(ALGORITHM)
@@ -66,7 +68,6 @@ public class KeyService {
     }
 
     public static StringKeyPair convertToStringKeyPair(KeyPair keyPair, String secret) {
-
         try {
             byte[] publicKey = keyPair.getPublic().getEncoded();
             byte[] privateKey = encryptPrivateKey(keyPair.getPrivate().getEncoded(), secret.toCharArray());
@@ -103,25 +104,29 @@ public class KeyService {
     }
 
     private static byte[] encryptPrivateKey(byte[] data, char[] password)
-            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException, InvalidParameterSpecException {
-        String MYPBEALG = "PBEWithSHA1AndDESede";
+            throws IOException,
+            NoSuchAlgorithmException,
+            InvalidKeySpecException,
+            NoSuchPaddingException,
+            BadPaddingException,
+            IllegalBlockSizeException,
+            InvalidAlgorithmParameterException,
+            InvalidKeyException,
+            InvalidParameterSpecException {
         int count = 20;
         SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[8];
-        random.nextBytes(salt);
-        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, count);
+        random.nextBytes(SALT);
+        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(SALT, count);
         PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
-        SecretKeyFactory keyFac = SecretKeyFactory.getInstance(MYPBEALG);
+        SecretKeyFactory keyFac = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
-        Cipher pbeCipher = Cipher.getInstance(MYPBEALG);
+        Cipher pbeCipher = Cipher.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         pbeCipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec);
         byte[] cipherText = pbeCipher.doFinal(data);
-        AlgorithmParameters algparms = AlgorithmParameters.getInstance(MYPBEALG);
-        algparms.init(pbeParamSpec);
-        EncryptedPrivateKeyInfo encinfo = new EncryptedPrivateKeyInfo(algparms, cipherText);
-        return encinfo.getEncoded();
+        AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
+        algorithmParameters.init(pbeParamSpec);
+        return new EncryptedPrivateKeyInfo(algorithmParameters, cipherText).getEncoded();
     }
-
 
     public static StringKeyPair generateStringKeyPair(final String secret) {
         try {
