@@ -14,13 +14,13 @@ import java.util.Base64;
  */
 public class KeyService {
 
-    private static final String ALGORITHM = "RSA";
+    private static final String DEFAULT_KEY_ALGORITHM = "RSA";
     private static final String PRIVATE_KEY_ENCRYPTION_ALGORITHM = "PBEWithSHA1AndDESede";
     private static final byte[] SALT = new byte[8];
     private static final int SALT_ITERATION_COUNT = 20;
 
     private static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
-        PublicKey key = KeyFactory.getInstance(ALGORITHM)
+        PublicKey key = KeyFactory.getInstance(DEFAULT_KEY_ALGORITHM)
                 .generatePublic(new X509EncodedKeySpec(publicKey));
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.PUBLIC_KEY, key);
@@ -32,9 +32,9 @@ public class KeyService {
     }
 
     private static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
-        PrivateKey key = KeyFactory.getInstance(ALGORITHM)
+        PrivateKey key = KeyFactory.getInstance(DEFAULT_KEY_ALGORITHM)
                 .generatePrivate(new PKCS8EncodedKeySpec(privateKey));
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        Cipher cipher = Cipher.getInstance(DEFAULT_KEY_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
         return cipher.doFinal(inputData);
     }
@@ -47,7 +47,7 @@ public class KeyService {
 
     public static KeyPair generateKeyPair()
             throws NoSuchAlgorithmException {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(DEFAULT_KEY_ALGORITHM);
         keyGen.initialize(2048);
         return keyGen.generateKeyPair();
     }
@@ -96,7 +96,7 @@ public class KeyService {
             AlgorithmParameters algParams = encryptPKInfo.getAlgParameters();
             cipher.init(Cipher.DECRYPT_MODE, pbeKey, algParams);
             KeySpec pkcs8KeySpec = encryptPKInfo.getKeySpec(cipher);
-            KeyFactory kf = KeyFactory.getInstance(ALGORITHM);
+            KeyFactory kf = KeyFactory.getInstance(DEFAULT_KEY_ALGORITHM);
             return kf.generatePrivate(pkcs8KeySpec).getEncoded();
         } catch (Exception e) {
             e.printStackTrace();
