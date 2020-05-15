@@ -82,7 +82,7 @@ public class KeyService {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | InvalidParameterSpecException e) {
-            throw new IllegalStateException(String.format("could not convert key pair ['%s'].", e.getMessage()), e);
+            throw new IllegalStateException(String.format("converting KeyPair to StringKeyPair failed with msg: ['%s'].", e.getMessage()), e);
         }
     }
 
