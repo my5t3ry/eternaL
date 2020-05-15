@@ -27,4 +27,5 @@ public class StringKeyPair {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
+
 }
