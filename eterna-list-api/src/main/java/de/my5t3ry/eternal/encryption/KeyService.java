@@ -17,6 +17,7 @@ public class KeyService {
     private static final String ALGORITHM = "RSA";
     private static final String PRIVATE_KEY_ENCRYPTION_ALGORITHM = "PBEWithSHA1AndDESede";
     private static final byte[] SALT = new byte[8];
+    private static final int SALT_ITERATION_COUNT = 20;
 
     private static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
         PublicKey key = KeyFactory.getInstance(ALGORITHM)
@@ -113,10 +114,9 @@ public class KeyService {
             InvalidAlgorithmParameterException,
             InvalidKeyException,
             InvalidParameterSpecException {
-        int count = 20;
         SecureRandom random = new SecureRandom();
         random.nextBytes(SALT);
-        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(SALT, count);
+        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(SALT, SALT_ITERATION_COUNT);
         PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
         SecretKeyFactory keyFac = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
