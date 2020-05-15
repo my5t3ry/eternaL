@@ -104,8 +104,8 @@ public class KeyService {
         }
     }
 
-    private static byte[] encryptPrivateKey(byte[] data, char[] password)
-            throws IOException,
+    private static byte[] encryptPrivateKey(byte[] data, char[] password) throws
+            IOException,
             NoSuchAlgorithmException,
             InvalidKeySpecException,
             NoSuchPaddingException,
@@ -116,15 +116,14 @@ public class KeyService {
             InvalidParameterSpecException {
         SecureRandom random = new SecureRandom();
         random.nextBytes(SALT);
-        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(SALT, SALT_ITERATION_COUNT);
         PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
         SecretKeyFactory keyFac = SecretKeyFactory.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
         SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
         Cipher pbeCipher = Cipher.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
-        pbeCipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec);
+        pbeCipher.init(Cipher.ENCRYPT_MODE, pbeKey, new PBEParameterSpec(SALT, SALT_ITERATION_COUNT));
         byte[] cipherText = pbeCipher.doFinal(data);
         AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(PRIVATE_KEY_ENCRYPTION_ALGORITHM);
-        algorithmParameters.init(pbeParamSpec);
+        algorithmParameters.init(new PBEParameterSpec(SALT, SALT_ITERATION_COUNT));
         return new EncryptedPrivateKeyInfo(algorithmParameters, cipherText).getEncoded();
     }
 
