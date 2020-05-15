@@ -51,8 +51,8 @@ public class KeyService {
         return new String(bytes);
     }
 
-    private static byte[] stringToBytes(String astring) {
-        return astring.getBytes();
+    private static byte[] stringToBytes(String string) {
+        return string.getBytes();
     }
 
     private static String bytesToEncodedString(byte[] bytes) {
@@ -68,7 +68,6 @@ public class KeyService {
         byte[] privateKey = keyPair.getPrivate().getEncoded();
         return new StringKeyPair(bytesToEncodedString(publicKey), bytesToEncodedString(privateKey));
     }
-
 
     public static StringKeyPair generateStringKeyPair() {
         try {
