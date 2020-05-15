@@ -1,9 +1,7 @@
 package de.my5t3ry.eternal.list;
 
+import de.my5t3ry.eternal.encryption.EncryptionService;
 import de.my5t3ry.eternal.jwt.JwtAuthentication;
-import de.my5t3ry.eternal.list.List;
-import de.my5t3ry.eternal.list.ListRepository;
-import de.my5t3ry.eternal.list.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,13 +29,16 @@ public class ListRestController {
     @Autowired
     private ListRepository listRepository;
 
+    @Autowired
+    private EncryptionService encryptionService;
+
     @PostMapping
     @Transactional
     public ResponseEntity<List> save(@RequestBody String value, final JwtAuthentication authentication) {
         try {
             final List defaultList = listRepository.findByOwner(authentication.getEmail());
-            defaultList.setSecret(authentication.getId());
             if (Objects.nonNull(defaultList)) {
+                encryptionService.unlock(defaultList, authentication);
                 defaultList.setValue(value);
                 return new ResponseEntity(listRepository.save(defaultList), HttpStatus.OK);
             } else {
@@ -57,7 +58,6 @@ public class ListRestController {
             if (Objects.isNull(defaultList)) {
                 return new ResponseEntity<>(listRepository.save(createDefaultList(authentication)), HttpStatus.OK);
             }
-            defaultList.setSecret(authentication.getId());
             return new ResponseEntity<>(defaultList, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,6 +66,9 @@ public class ListRestController {
     }
 
     private List createDefaultList(JwtAuthentication authentication) {
-        return new List(authentication, defaultListText, ListType.DEFAULT);
+        final List list = new List(authentication, defaultListText, ListType.DEFAULT);
+        encryptionService.unlock(list, authentication);
+        list.setValue(defaultListText);
+        return list;
     }
 }

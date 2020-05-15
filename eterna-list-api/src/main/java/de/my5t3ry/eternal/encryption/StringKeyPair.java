@@ -23,6 +23,8 @@ public class StringKeyPair {
     @Lob
     private String privateKey;
 
+    private String owner;
+
     public StringKeyPair(final String publicKey, final String privateKey) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
