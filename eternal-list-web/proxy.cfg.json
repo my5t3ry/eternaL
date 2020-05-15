@@ -1,0 +1,11 @@
+{
+  "/auth/*": {
+    "target": "https://keycloak.shitkatapult.org/auth",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": false,
+    "pathRewrite": {
+      "^/auth": ""
+    }
+  }
+}

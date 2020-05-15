@@ -1,0 +1,10 @@
+{
+  "realm": "master",
+  "auth-server-url": "https://keycloak.shitkatapult.org/auth",
+  "ssl-required": "none",
+  "resource": "eternaL-web",
+  "public-client": true,
+  "verify-token-audience": true,
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+}
