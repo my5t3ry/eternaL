@@ -82,7 +82,7 @@ public class KeyService {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | InvalidParameterSpecException e) {
-            throw new IllegalStateException("failed to encrypt private key with secret.", e);
+            throw new IllegalStateException(String.format("could not convert key pair ['%s'].", e.getMessage()), e);
         }
     }
 
